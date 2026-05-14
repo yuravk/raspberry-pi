@@ -42,7 +42,6 @@ cloud-init
 cloud-utils-growpart
 e2fsprogs
 net-tools
--*-firmware
 brcmfmac-firmware
 linux-firmware
 linux-firmware-raspberrypi
@@ -57,6 +56,17 @@ raspberrypi2-kernel4-modules-core
 raspberrypi2-kernel4-modules-extra
 nano
 libgpiod-utils
+# exclude unnecessary firmwares for rpi
+-amd-ucode-firmware
+-atheros-firmware
+-cirrus-audio-firmware
+-intel-gpu-firmware
+-intel-audio-firmware
+-mt7xxx-firmware
+-nxpwireless-firmware
+-realtek-firmware
+-nvidia-gpu-firmware
+-tiwilink-firmware
 %end
 
 %post
