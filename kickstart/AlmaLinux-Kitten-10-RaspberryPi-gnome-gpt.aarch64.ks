@@ -29,11 +29,8 @@ part / --fstype=ext4 --size=4400 --label=rootfs --ondisk=sda
 @core
 @gnome-desktop
 firefox
-dejavu-sans-fonts
-dejavu-sans-mono-fonts
-dejavu-serif-fonts
-#aajohan-comfortaa-fonts
-#abattis-cantarell-fonts
+default-fonts-core
+default-fonts-core-emoji
 -gnome-shell-browser-plugin
 -java-21-*
 -kernel-*
