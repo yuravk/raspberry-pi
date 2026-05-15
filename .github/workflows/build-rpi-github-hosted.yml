@@ -89,7 +89,7 @@ jobs:
             partitioning: 'mbr'
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Update and install need utilities into the runner
       run: |
