@@ -95,7 +95,7 @@ jobs:
     steps:
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4.0.2
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -118,7 +118,7 @@ jobs:
 
     - name: Setup and start the runner
       id: start-ec2-runner
-      uses: NextChapterSoftware/ec2-action-builder@v1.5
+      uses: unblocked/ec2-action-builder@v1.11
       with:
         github_token: ${{ secrets.GIT_HUB_TOKEN }}
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -166,7 +166,7 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       name: Checkout ${{ github.action_repository }}
 
     - name: Set environment variables
@@ -260,13 +260,13 @@ jobs:
           ${{ env.rpi_image_resultdir }}/${{ env.image_name }}/${{ env.image_name }}.raw
 
     - name: Compress image
-      if: steps.create-image.outcome == 'success' && inputs.upload_to_s3
+      if: steps.create-image.outcome == 'success'
       id: compress-image
       run: |
         cd ${{ env.rpi_image_resultdir }}/${{ env.image_name }}
 
         # XZ default compression level is 6 (of 0-9)
-        ( [ "${{ inputs.upload_to_s3 }}" = "true" ] && xz -k -9 -e -T0 ${{ env.image_name }}.raw ) || true
+        xz -k -9 -e -T0 ${{ env.image_name }}.raw || true
 
     - name: Collect and compress logs, xml
       id: compress-logs
@@ -282,28 +282,27 @@ jobs:
         fi
 
         # XZ default compression level is 6 (of 0-9)
-        ( [ "${{ inputs.upload_to_s3 }}" = "true" ] && xz -k -9 -e -T0 ${{ env.image_name }}.log.tar ) || true
+        xz -k -9 -e -T0 ${{ env.image_name }}.log.tar || true
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       name: Store logs, xml as artifact
       id: logs-artifact
       if: success() || failure()
       with:
-        name: ${{ env.image_name }}.log.tar
-        path: ${{ env.rpi_image_resultdir }}/${{ env.image_name }}.log.tar
+        archive: false
+        path: ${{ env.rpi_image_resultdir }}/${{ env.image_name }}.log.tar.xz
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       name: Store image as artifact
       id: image-artifact
       if: steps.create-image.outcome == 'success' && inputs.store_as_artifact
       with:
-        name: "${{ env.image_name }}.raw"
-        compression-level: 1
-        path: ${{ env.rpi_image_resultdir }}/${{ env.image_name }}/${{ env.image_name }}.raw
+        archive: false
+        path: ${{ env.rpi_image_resultdir }}/${{ env.image_name }}/${{ env.image_name }}.raw.xz
 
     - name: Configure AWS credentials
       if: steps.compress-image.outcome == 'success' && inputs.upload_to_s3
-      uses: aws-actions/configure-aws-credentials@v4.0.2
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         aws-access-key-id: ${{ secrets.S3_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.S3_SECRET_ACCESS_KEY }}
