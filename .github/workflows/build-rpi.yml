@@ -1,5 +1,13 @@
 name: Build Raspberry Pi images
 
+run-name: >-
+  ${{ format('Build AlmaLinux {0} Raspberry Pi{1}{2}{3}{4} images',
+                inputs.version_major == '10-kitten' && 'Kitten 10' || inputs.version_major,
+                inputs.console && ' console' || '',
+                inputs.gnome && ' GNOME' || '',
+                inputs.mbr && ' MBR' || '',
+                inputs.gpt && ' GPT' || '') }}
+
 on:
   workflow_dispatch:
     inputs:
