@@ -68,7 +68,7 @@ on:
         description: "Send notification to Mattermost"
         required: true
         type: boolean
-        default: false
+        default: true
 
 jobs:
   build-image:
