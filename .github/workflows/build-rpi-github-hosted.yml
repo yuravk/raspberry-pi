@@ -466,7 +466,7 @@ jobs:
 
     - name: Put S3 Bucket download URLs
       if: steps.publish-to-s3.outcome == 'success' && inputs.upload_to_s3
-      uses: actions/github-script@v7
+      uses: actions/github-script@v9
       with:
         result-encoding: string
         script: |
